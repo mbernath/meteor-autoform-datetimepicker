@@ -1,0 +1,11 @@
+<template name="afDatetimepicker">
+  {{#if cordova }}
+    {{#if dateOnly }}
+    <input type="date" value="{{this.value}}" {{atts}} />
+    {{else }}
+    <input type="datetime-local" value="{{this.value}}" {{atts}} />
+    {{/if }}
+  {{else }}
+    <input type="text" value="{{this.value}}" {{atts}} />
+  {{/if }}
+</template>
