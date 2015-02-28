@@ -51,7 +51,9 @@ AFDatetimepickerSchema =new SimpleSchema({
 Specify options, including Pikaday options, with a template helper.
 
 @param {String} [formatValue ='YYYY-MM-DD HH:mm:ssZ'] The input and output value format (NOT what is displayed to the user by the Pikaday date time picker per se)
+
 @param {Object} [pikaday] The normal Pikaday date/time picker options, see: https://github.com/dbushell/Pikaday#configuration AND https://github.com/owenmead/Pikaday for time picker options, which are enabled by default
+
   @param {String} [format ='YYYY-MM-DD h:mmA'] The Pikaday / input value format that is displayed
 
 To disable the time picker and just have a date select, change the `formatValue` and/or `pikaday.format` options to specify the display and stored values you want and then set the `pikaday.showTime` option to false.

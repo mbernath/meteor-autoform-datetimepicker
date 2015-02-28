@@ -16,6 +16,7 @@ Package.onUse(function(api) {
   api.use('blaze@2.0.0');
   api.use('aldeed:autoform@4.0.0');
   api.use('momentjs:moment@2.0.0');
+  api.use('session@1.0.0');
   api.addFiles([
     'notorii_autoform-datetimepicker.html',
     'notorii_autoform-datetimepicker.css',
