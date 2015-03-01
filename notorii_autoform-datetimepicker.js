@@ -1,19 +1,27 @@
+/**
+@todo
+- remove debug stuff (js here, html)
+*/
+
 //variables to store / access across all functions (not sure how to do so otherwise? would have to put these on the element data itself?). BUT must store as instances to keep these separate so multiple instances on the same page do not overwrite each other!
 var VAL ={};
 var OPTS ={};
+var FEATURES ={
+  inited: false
+};
 
 var DEBUG ='';
 Session.set('afDatetimepickerDebug', DEBUG);
 
 var afDatetimepicker ={
-  setup: function(instid, ele, template, params) {
+  setup: function(instid, elm, template, params) {
     var self =this;
 
     var sessKeyDateOnly ='afDatetimepicker'+instid+'dateOnly';
     //default - so it is defined
     Session.set(sessKeyDateOnly, false);
 
-    VAL[instid] =ele.value;
+    VAL[instid] =elm.value;
 
     var optsDefault ={
       formatValue: 'YYYY-MM-DD HH:mm:ssZ',
@@ -42,9 +50,10 @@ var afDatetimepicker ={
       }
     }
 
+    var dateOnly =self.checkForDateOnly(OPTS[instid], {});
     var picker =false;
-    if(!Meteor.isCordova) {
-      OPTS[instid].pikaday.field =ele;
+    if(!self.featureDetect({}).mobile) {
+      OPTS[instid].pikaday.field =elm;
       OPTS[instid].pikaday.onSelect =function() {
         VAL[instid] =this.getMoment().format(OPTS[instid].pikaday.format);
       };
@@ -52,7 +61,6 @@ var afDatetimepicker ={
       picker = new Pikaday(OPTS[instid].pikaday);
     }
     else {
-      var dateOnly =self.checkForDateOnly(OPTS[instid], {});
       Session.set(sessKeyDateOnly, dateOnly);
     }
 
@@ -60,17 +68,46 @@ var afDatetimepicker ={
       //convert from non-display value to display value
       VAL[instid] =moment(VAL[instid], OPTS[instid].formatValue).format(OPTS[instid].pikaday.format);
 
-      self.setVal(instid, picker, {});
+      self.setVal(instid, elm, picker, {});
+    }
+
+    //for datetime-local input type, we get an "invalid date" value if not formatted correctly on init and that blanks out our value so to work around this, we just use a "text" type input and then dynamically change it AFTER setting to the PROPERLY FORMATTED date/datetime in javascript.
+    if(self.featureDetect({}).mobile) {
+      if(dateOnly) {
+        elm.attributes['type'].value ='date';
+      }
+      else {
+        // elm.type ='datetime-local';
+        elm.attributes['type'].value ='datetime-local';
+      }
     }
   },
 
-  setVal: function(instid, picker, params) {
-    if(Meteor.isCordova) {
-      //@todo
+  setVal: function(instid, elm, picker, params) {
+    var self =this;
+    if(self.featureDetect({}).mobile) {
+      var dateObj =moment(VAL[instid], OPTS[instid].pikaday.format);
+      var dateOnly =self.checkForDateOnly(OPTS[instid], {});
+      var inputFormatString =self.getInputFormatNative(dateOnly, {});
+      var inputFormat =dateObj.format(inputFormatString);
+      elm.value =inputFormat;
     }
     else {
       picker.setMoment(moment(VAL[instid], OPTS[instid].pikaday.format));
     }
+  },
+
+  getInputFormatNative: function(dateOnly, params) {
+    var inputFormatString;
+    //if date only
+    if(dateOnly) {
+      inputFormatString ='YYYY-MM-DD';
+    }
+    //if date and time
+    else {
+      inputFormatString ='YYYY-MM-DDTHH:mm:ss';   //datetime-local now so no timezone (including it will not properly set the input (default) value)
+    }
+    return inputFormatString;
   },
 
   checkForDateOnly: function(opts, params) {
@@ -79,6 +116,20 @@ var afDatetimepicker ={
       return false;
     }
     return dateOnly;
+  },
+
+  featureDetect: function(params) {
+    if(!FEATURES.inited) {
+      FEATURES.mobile =false;
+      //mobile - from http://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+      if( navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)
+      ) {
+        FEATURES.mobile =true;
+      }
+
+      FEATURES.inited =true;    //set for next time
+    }
+    return FEATURES;
   },
 
   /**
@@ -173,9 +224,9 @@ AutoForm.addInputType("datetimepicker", {
 });
 
 Template.afDatetimepicker.rendered =function() {
-  var ele =this.find('input');
+  var elm =this.find('input');
   var key =this.data.atts['data-schema-key'];
-  afDatetimepicker.setup(key, ele, this, {});
+  afDatetimepicker.setup(key, elm, this, {});
 };
 
 Template.afDatetimepicker.helpers({
@@ -188,8 +239,8 @@ Template.afDatetimepicker.helpers({
     delete atts.opts;
     return atts;
   },
-  cordova: function() {
-    return Meteor.isCordova;
+  native: function() {
+    return afDatetimepicker.featureDetect({}).mobile;
   },
   dateOnly: function() {
     var instid =Template.instance().data.atts['data-schema-key'];
@@ -203,43 +254,41 @@ Template.afDatetimepicker.helpers({
 
 Template.afDatetimepicker.events({
   'change .autoform-datetimepicker-input': function(evt, template) {
-    if(Meteor.isCordova) {
+    if(afDatetimepicker.featureDetect({}).mobile) {
       var instid =template.data.atts['data-schema-key'];
-      //convert from input value format to the format we want (display for consistency with Pikaday, even though we will NOT actually change the display value the user sees)
-      // DEBUG +=JSON.stringify(template)+' '+JSON.stringify(this)+'<br />';   //TESTING
-      // DEBUG +=template.value+' '+JSON.stringify(template)+' '+JSON.stringify(this)+'<br />';    //TESTING
-      DEBUG +=evt.target.value+'<br />';    //TESTING
-      Session.set('afDatetimepickerDebug', DEBUG);
-
-      //@todo - handle date (without time?)
-      
-      var inputFormatString ='YYYY-MM-DDTHH:mm:ss';   //datetime-local now so no timezone (including it will not properly set the input (default) value)
+      //convert from input value format to the format we want (use the display format for consistency with Pikaday, even though we will NOT actually change the display value the user sees)
       var date =evt.target.value;
-      var dateMoment;
-      var tzFromMinutes =false;
-      if(typeof(date) =='object') {   //assume javascript date object
-        dateMoment =moment(date);
+      var dateOnly =afDatetimepicker.checkForDateOnly(OPTS[instid], {});
+      var inputFormatString =afDatetimepicker.getInputFormatNative(dateOnly, {});
+      //if date only
+      if(dateOnly) {
+        VAL[instid] =moment(date, inputFormatString).format(OPTS[instid].pikaday.format);
       }
-      else if(typeof(date) =='string') {    //assume Android, which apparently gives YYYY-MM-DDTHH:mmZ format..
-        dateMoment =moment(date, 'YYYY-MM-DD HH:mm');
-        if(date.indexOf('Z') >-1) {
-          tzFromMinutes =0;
+      //if date and time
+      else {
+        var dateMoment;
+        var tzFromMinutes =false;
+        if(typeof(date) =='object') {   //assume javascript date object
+          dateMoment =moment(date);
         }
+        else if(typeof(date) =='string') {    //assume Android, which apparently gives YYYY-MM-DDTHH:mmZ format..
+          dateMoment =moment(date, 'YYYY-MM-DD HH:mm');
+          if(date.indexOf('Z') >-1) {
+            tzFromMinutes =0;
+          }
+        }
+
+        //convert to local timezone (so it matches what the user actually selected)
+        var format1 ='YYYY-MM-DD HH:mm:ssZ';
+        var dtInfo =afDatetimepicker.convertTimezone(dateMoment, tzFromMinutes, false, {'format':format1});
+        // var formattedModelVal =moment(dtInfo.dateFormatted, format1).format(scope.opts.formatModel);
+
+        //update input value with non UTC value
+        var inputFormat =dtInfo.date.format(inputFormatString);
+        evt.target.value =inputFormat;
+
+        VAL[instid] =dtInfo.date.format(OPTS[instid].pikaday.format);
       }
-
-      //convert to local timezone (so it matches what the user actually selected)
-      var format1 ='YYYY-MM-DD HH:mm:ssZ';
-      var dtInfo =afDatetimepicker.convertTimezone(dateMoment, tzFromMinutes, false, {'format':format1});
-      // var formattedModelVal =moment(dtInfo.dateFormatted, format1).format(scope.opts.formatModel);
-
-      //update input value with non UTC value
-      var inputFormat =dtInfo.date.format(inputFormatString);
-      evt.target.value =inputFormat;
-
-      VAL[instid] =dtInfo.date.format(OPTS[instid].pikaday.format);
-
-      DEBUG +=evt.target.value+' '+VAL[instid]+'<br />';    //TESTING
-      Session.set('afDatetimepickerDebug', DEBUG);
     }
   }
 });
