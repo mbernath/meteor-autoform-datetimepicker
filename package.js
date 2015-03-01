@@ -1,8 +1,8 @@
 Package.describe({
   name: 'notorii:autoform-datetimepicker',
-  version: '0.0.1',
+  version: '0.0.2',
   // Brief, one-line summary of the package.
-  summary: 'Cordova (and Pikaday for web), lightweight (no jQuery or Bootstrap) datetimepicker',
+  summary: 'Cordova / Phonegap (and Pikaday for web), lightweight (no jQuery or Bootstrap) datetimepicker',
   // URL to the Git repository containing the source code for this package.
   git: 'https://github.com/notorii/meteor-autoform-datetimepicker',
   // By default, Meteor will default to using README.md for documentation.

@@ -1,9 +1,14 @@
 # notorii:autoform-datetimepicker
 
-An add-on Meteor package for aldeed:autoform. Provides a single custom input type, "datetimepicker", which renders an input that allows selecting datetime (or just date) across ALL platforms (mobile, desktop, wrapped inside a Cordova app). Specifically:
-- Cordova (Android, iOS) wrapped apps just use the `datetime-local` (or `date`) input type, which will bring up the native date(time) input on mobile.
-- non-Cordova (web) interfaces use Pikaday datetimepicker functionality.
+An add-on Meteor package for aldeed:autoform. Provides a single custom input type, "datetimepicker", which renders an input that allows selecting datetime (or just date) across ALL platforms (mobile, desktop, wrapped inside a Cordova / Phonegap app). Specifically:
+- Mobile (Android, iOS) (either Cordova wrapped apps or mobile web browser) just use the `datetime-local` (or `date`) input type, which will bring up the native date(time) input on mobile.
+- Desktop web interfaces use Pikaday datetimepicker functionality.
   - https://github.com/owenmead/Pikaday (forked timepicker version of: https://github.com/dbushell/Pikaday)
+
+Default datetime-local and date input types handle the majority of cases so this basically just does 3 things:
+1. adds Pikaday functionality for desktop web
+2. allows custom date/datetime formats (the transformation to make it "just work" with datetime-local formats will be handled for you)
+3. provides ONE cross platform input type that will handle all cases
 
 
 ## Demo

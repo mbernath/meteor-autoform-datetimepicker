@@ -1,6 +1,4 @@
 /**
-@todo
-- remove debug stuff (js here, html)
 */
 
 //variables to store / access across all functions (not sure how to do so otherwise? would have to put these on the element data itself?). BUT must store as instances to keep these separate so multiple instances on the same page do not overwrite each other!
@@ -9,9 +7,6 @@ var OPTS ={};
 var FEATURES ={
   inited: false
 };
-
-var DEBUG ='';
-Session.set('afDatetimepickerDebug', DEBUG);
 
 var afDatetimepicker ={
   setup: function(instid, elm, template, params) {
@@ -210,8 +205,6 @@ AutoForm.addInputType("datetimepicker", {
   valueOut: function() {
     var instid =this.attr('data-schema-key');
     var returnVal;
-    DEBUG +=instid+' '+VAL[instid]+' '+OPTS[instid].formatValue+' '+OPTS[instid].pikaday.format+'<br />';   //TESTING
-    Session.set('afDatetimepickerDebug', DEBUG);
     //convert to non-display value
     if(OPTS[instid].formatValue !==undefined) {
       returnVal =moment(VAL[instid], OPTS[instid].pikaday.format).format(OPTS[instid].formatValue);
@@ -239,16 +232,13 @@ Template.afDatetimepicker.helpers({
     delete atts.opts;
     return atts;
   },
-  native: function() {
-    return afDatetimepicker.featureDetect({}).mobile;
-  },
+  // native: function() {
+  //   return afDatetimepicker.featureDetect({}).mobile;
+  // },
   dateOnly: function() {
     var instid =Template.instance().data.atts['data-schema-key'];
     var sessKeyDateOnly ='afDatetimepicker'+instid+'dateOnly';
     return Session.get(sessKeyDateOnly);
-  },
-  debug: function() {
-    return Session.get('afDatetimepickerDebug');
   }
 });
 
