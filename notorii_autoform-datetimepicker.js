@@ -9,12 +9,22 @@ var FEATURES ={
 };
 
 var afDatetimepicker ={
+  formSessKeys: function(instid, params) {
+    var sessKeyBase ='afDatetimepicker'+instid;
+    var sessKeys ={
+      dateOnly: sessKeyBase+'DateOnly',
+      classes: sessKeyBase+'Classes'
+    };
+    return sessKeys;
+  },
+
   setup: function(instid, elm, template, params) {
     var self =this;
 
-    var sessKeyDateOnly ='afDatetimepicker'+instid+'dateOnly';
+    var sessKeys =self.formSessKeys(instid, {});
     //default - so it is defined
-    Session.set(sessKeyDateOnly, false);
+    Session.set(sessKeys.dateOnly, false);
+    Session.set(sessKeys.classes, {});
 
     VAL[instid] =elm.value;
 
@@ -56,7 +66,7 @@ var afDatetimepicker ={
       picker = new Pikaday(OPTS[instid].pikaday);
     }
     else {
-      Session.set(sessKeyDateOnly, dateOnly);
+      Session.set(sessKeys.dateOnly, dateOnly);
     }
 
     if(VAL[instid]) {
@@ -75,6 +85,13 @@ var afDatetimepicker ={
         // elm.type ='datetime-local';
         elm.attributes['type'].value ='datetime-local';
       }
+    }
+
+    //for iOS, make sure inputs are not super small height when they have no value yet
+    if(self.featureDetect({}).deviceType ==='ios') {
+      var classes1 =Session.get(sessKeys.classes);
+      classes1.input ='ios';
+      Session.set(sessKeys.classes, classes1);
     }
   },
 
@@ -116,10 +133,14 @@ var afDatetimepicker ={
   featureDetect: function(params) {
     if(!FEATURES.inited) {
       FEATURES.mobile =false;
+      FEATURES.deviceType =false;
       //mobile - from http://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
       if( navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)
       ) {
         FEATURES.mobile =true;
+        if(navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i)) {
+          FEATURES.deviceType ='ios';
+        }
       }
 
       FEATURES.inited =true;    //set for next time
@@ -229,6 +250,9 @@ Template.afDatetimepicker.helpers({
   atts: function() {
     var atts =EJSON.clone(this.atts);
     // atts.instid ='afDatetimepicker'+Math.random().toString(36).substring(7);
+    if(atts.placeholder ===undefined) {
+      atts.placeholder ='Pick a date';
+    }
     delete atts.opts;
     return atts;
   },
@@ -237,8 +261,13 @@ Template.afDatetimepicker.helpers({
   // },
   dateOnly: function() {
     var instid =Template.instance().data.atts['data-schema-key'];
-    var sessKeyDateOnly ='afDatetimepicker'+instid+'dateOnly';
-    return Session.get(sessKeyDateOnly);
+    var sessKeys =afDatetimepicker.formSessKeys(instid, {});
+    return Session.get(sessKeys.dateOnly);
+  },
+  classes: function() {
+    var instid =Template.instance().data.atts['data-schema-key'];
+    var sessKeys =afDatetimepicker.formSessKeys(instid, {});
+    return Session.get(sessKeys.classes);
   }
 });
 

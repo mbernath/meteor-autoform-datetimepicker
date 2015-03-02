@@ -59,9 +59,9 @@ Specify options, including Pikaday options, with a template helper.
 
 @param {Object} [pikaday] The normal Pikaday date/time picker options, see: https://github.com/dbushell/Pikaday#configuration AND https://github.com/owenmead/Pikaday for time picker options, which are enabled by default
 
-  @param {String} [format ='YYYY-MM-DD h:mmA'] The Pikaday / input value format that is displayed
+  @param {String} [format ='YYYY-MM-DD h:mmA'] The Pikaday / input value format that is displayed. NOTE: the display value will only match what is set here for Pikaday (web desktop); mobile uses the native format for the date/time picker of that platform.
 
-To disable the time picker and just have a date select, change the `formatValue` and/or `pikaday.format` options to specify the display and stored values you want and then set the `pikaday.showTime` option to false.
+To disable the time picker and just have a date select, change the `formatValue` option (and `pikaday.format` generally as well) to specify the format you want (if no 'h' and no 'H' in the `formatValue`, it will assume date only) and then set the `pikaday.showTime` option to false.
 
 ```js
 if(Meteor.isClient) {
