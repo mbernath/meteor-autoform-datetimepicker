@@ -6,6 +6,7 @@ An add-on Meteor package for aldeed:autoform. Provides a single custom input typ
   - https://github.com/owenmead/Pikaday (forked timepicker version of: https://github.com/dbushell/Pikaday)
 
 Default datetime-local and date input types handle the majority of cases so this basically just does 3 things:
+
 1. adds Pikaday functionality for desktop web
 2. allows custom date/datetime formats (the transformation to make it "just work" with datetime-local formats will be handled for you)
 3. provides ONE cross platform input type that will handle all cases
@@ -55,11 +56,11 @@ AFDatetimepickerSchema =new SimpleSchema({
 
 Specify options, including Pikaday options, with a template helper.
 
-@param {String} [formatValue ='YYYY-MM-DD HH:mm:ssZ'] The input and output value format (NOT what is displayed to the user by the Pikaday date time picker per se)
+- @param {String} [formatValue ='YYYY-MM-DD HH:mm:ssZ'] The input and output value format (NOT what is displayed to the user by the Pikaday date time picker per se)
 
-@param {Object} [pikaday] The normal Pikaday date/time picker options, see: https://github.com/dbushell/Pikaday#configuration AND https://github.com/owenmead/Pikaday for time picker options, which are enabled by default
+- @param {Object} [pikaday] The normal Pikaday date/time picker options, see: https://github.com/dbushell/Pikaday#configuration AND https://github.com/owenmead/Pikaday for time picker options, which are enabled by default
 
-  @param {String} [format ='YYYY-MM-DD h:mmA'] The Pikaday / input value format that is displayed. NOTE: the display value will only match what is set here for Pikaday (web desktop); mobile uses the native format for the date/time picker of that platform.
+  - @param {String} [format ='YYYY-MM-DD h:mmA'] The Pikaday / input value format that is displayed. NOTE: the display value will only match what is set here for Pikaday (web desktop); mobile uses the native format for the date/time picker of that platform.
 
 To disable the time picker and just have a date select, change the `formatValue` option (and `pikaday.format` generally as well) to specify the format you want (if no 'h' and no 'H' in the `formatValue`, it will assume date only) and then set the `pikaday.showTime` option to false.
 
