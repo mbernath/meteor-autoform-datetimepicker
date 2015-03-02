@@ -15,7 +15,7 @@ Default datetime-local and date input types handle the majority of cases so this
 ## Why?
 
 - the default `datetime-local` and `date` input types do not have datepickers for desktop web
-- other date(time)pickers such as [bs-datetimepicker](https://atmospherejs.com/aldeed/autoform-bs-datetimepicker) do not work (as well) on mobile / when wrapped as a Cordova app, requiring custom code to switch out the datetime picker pending the platform - this package handles that all for you so you just set ONE input type and it works everywhere (across all platforms - web, Android, iOS).
+- other date(time)pickers such as [bs-datetimepicker](https://atmospherejs.com/aldeed/autoform-bs-datetimepicker) require other dependencies such as bootstrap or jQuery and do not work (as well) on mobile / when wrapped as a Cordova app, requiring custom code to switch out the datetime picker pending the platform - this package handles that all for you so you just set ONE input type and it works everywhere (across all platforms - web, Android, iOS).
 
 
 ## Demo
