@@ -12,6 +12,12 @@ Default datetime-local and date input types handle the majority of cases so this
 3. provides ONE cross platform input type that will handle all cases
 
 
+## Why?
+
+- the default `datetime-local` and `date` input types do not have datepickers for desktop web
+- other date(time)pickers such as [bs-datetimepicker](https://atmospherejs.com/aldeed/autoform-bs-datetimepicker) do not work (as well) on mobile / when wrapped as a Cordova app, requiring custom code to switch out the datetime picker pending the platform - this package handles that all for you so you just set ONE input type and it works everywhere (across all platforms - web, Android, iOS).
+
+
 ## Demo
 
 [Demo](http://lukemadera-packages.meteor.com/af-datetimepicker-basic)
