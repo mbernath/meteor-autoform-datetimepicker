@@ -46,7 +46,7 @@ Add Pikaday javascript and css files, e.g.: add `"pikaday-time": "latest"` to yo
 Specify "datetimepicker" for the `type` attribute of any input and set teh SimpleSchema to be an object:
 
 ```html
-{{> afQuickField name="dueDate" type="datetimepicker" opts="optsDatetimepicker"}}
+{{> afQuickField name="dueDate" type="datetimepicker" opts=optsDatetimepicker}}
 ```
 
 In the schema, which will then work with a `quickForm` or `afQuickFields`:
