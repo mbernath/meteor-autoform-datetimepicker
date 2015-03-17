@@ -1,3 +1,9 @@
+# 1.0.2 (2015-03-17)
+
+# Features
+- update for autoform 5.0
+
+
 # 1.0.1 (2015-03-02)
 
 ## Features
