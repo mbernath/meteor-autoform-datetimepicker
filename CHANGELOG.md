@@ -1,6 +1,13 @@
+# 1.0.3 (2015-04-23)
+
+## Bug Fixes
+- set to empty string if invalid date (if manually type / change date on desktop) [@tcastelli]
+- destroy properly (remove pikaday hidden div) to avoid cluttering DOM [@tcastelli]
+
+
 # 1.0.2 (2015-03-17)
 
-# Features
+## Features
 - update for autoform 5.0
 
 
