@@ -1,12 +1,5 @@
 <template name="afDatetimepicker">
-  <!-- {{#if native }}
-    {{#if dateOnly }}
-    <input type="date" value="{{this.value}}" {{atts}} class='autoform-datetimepicker-input' />
-    {{else }}
-    <input type="datetime-local" value="{{this.value}}" {{atts}} class='autoform-datetimepicker-input' />
-    {{/if }}
-  {{else }}
-    <input type="text" value="{{this.value}}" {{atts}} class='autoform-datetimepicker-input' />
-  {{/if }} -->
-  <input type="text" value="{{this.value}}" {{atts}} class='autoform-datetimepicker-input {{classes.input}}' />
+  <!-- <input type="text" value="{{this.value}}" {{atts}} class='autoform-datetimepicker-input {{classes.input}}' /> -->
+  <!-- class can get over-written so set in javascript -->
+  <input type="text" value="{{this.value}}" {{atts}} />
 </template>

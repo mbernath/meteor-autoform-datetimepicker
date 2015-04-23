@@ -24,7 +24,7 @@ var afDatetimepicker ={
     var sessKeys =self.formSessKeys(instid, {});
     //default - so it is defined
     Session.set(sessKeys.dateOnly, false);
-    Session.set(sessKeys.classes, {});
+    Session.set(sessKeys.classes, {input: 'autoform-datetimepicker-input'});
 
     VAL[instid] =elm.value;
 
@@ -64,6 +64,7 @@ var afDatetimepicker ={
       };
 
       picker = new Pikaday(OPTS[instid].pikaday);
+      template.picker.set(picker);
     }
     else {
       Session.set(sessKeys.dateOnly, dateOnly);
@@ -90,7 +91,7 @@ var afDatetimepicker ={
     //for iOS, make sure inputs are not super small height when they have no value yet
     if(self.featureDetect({}).deviceType ==='ios') {
       var classes1 =Session.get(sessKeys.classes);
-      classes1.input ='ios';
+      classes1.input +=' ios';
       Session.set(sessKeys.classes, classes1);
     }
   },
@@ -228,7 +229,12 @@ AutoForm.addInputType("datetimepicker", {
     var returnVal;
     //convert to non-display value
     if(OPTS[instid].formatValue !==undefined) {
-      returnVal =moment(VAL[instid], OPTS[instid].pikaday.format).format(OPTS[instid].formatValue);
+      if(!moment(VAL[instid], OPTS[instid].pikaday.format).isValid()) {
+        returnVal ='';
+      }
+      else {
+        returnVal =moment(VAL[instid], OPTS[instid].pikaday.format).format(OPTS[instid].formatValue);
+      }
     }
     else {
       returnVal =VAL[instid];
@@ -237,10 +243,38 @@ AutoForm.addInputType("datetimepicker", {
   }
 });
 
+Template.afDatetimepicker.created =function() {
+  this.picker = new ReactiveVar(false);
+};
+
 Template.afDatetimepicker.rendered =function() {
   var elm =this.find('input');
   var key =this.data.atts['data-schema-key'];
   afDatetimepicker.setup(key, elm, this, {});
+
+  //set / add classes
+  var sessKeys =afDatetimepicker.formSessKeys(key, {});
+  var classes1 =Session.get(sessKeys.classes);
+  //jquery
+  $(elm).addClass(classes1.input);
+  //pure javascript
+  // //only add if not already there
+  // var classParts =classes1.input.split(' ');
+  // var curClasses =elm.className;
+  // var ii;
+  // for(ii =0; ii<classParts.length; ii++) {
+  //   if(curClasses.indexOf(classParts[ii]) <0) {
+  //     curClasses +=' '+classParts[ii];
+  //   }
+  // }
+  // elm.className =curClasses;
+};
+
+Template.afDatetimepicker.destroyed =function() {
+  var picker =this.picker.get();
+  if(picker && picker.destroy) {
+    picker.destroy();
+  }
 };
 
 Template.afDatetimepicker.helpers({
@@ -307,6 +341,15 @@ Template.afDatetimepicker.events({
         evt.target.value =inputFormat;
 
         VAL[instid] =dtInfo.date.format(OPTS[instid].pikaday.format);
+      }
+    }
+    //on desktop they could manually type / change the value rather than using the datepicker so handle this case. Or just disable the input to force using the picker?
+    else {
+      var date =evt.target.value;
+      if (!moment(date).isValid()) {
+        var instid =template.data.atts['data-schema-key'];
+        VAL[instid] ='';
+        evt.target.value ='';
       }
     }
   }
