@@ -1,6 +1,6 @@
 Package.describe({
   name: 'notorii:autoform-datetimepicker',
-  version: '1.0.3',
+  version: '1.0.4',
   // Brief, one-line summary of the package.
   summary: 'Cordova / Phonegap (and Pikaday for web), lightweight (no jQuery or Bootstrap) datetimepicker',
   // URL to the Git repository containing the source code for this package.

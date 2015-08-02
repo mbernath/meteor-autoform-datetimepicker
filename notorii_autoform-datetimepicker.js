@@ -307,8 +307,8 @@ Template.afDatetimepicker.helpers({
 
 Template.afDatetimepicker.events({
   'change .autoform-datetimepicker-input': function(evt, template) {
+    var instid =template.data.atts['data-schema-key'];
     if(afDatetimepicker.featureDetect({}).mobile) {
-      var instid =template.data.atts['data-schema-key'];
       //convert from input value format to the format we want (use the display format for consistency with Pikaday, even though we will NOT actually change the display value the user sees)
       var date =evt.target.value;
       var dateOnly =afDatetimepicker.checkForDateOnly(OPTS[instid], {});
@@ -346,8 +346,7 @@ Template.afDatetimepicker.events({
     //on desktop they could manually type / change the value rather than using the datepicker so handle this case. Or just disable the input to force using the picker?
     else {
       var date =evt.target.value;
-      if (!moment(date).isValid()) {
-        var instid =template.data.atts['data-schema-key'];
+      if (!moment(date, OPTS[instid].pikaday.format).isValid()) {
         VAL[instid] ='';
         evt.target.value ='';
       }

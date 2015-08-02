@@ -1,3 +1,9 @@
+# 1.0.4 (2015-08-02)
+
+## Bug Fixes
+- explicitly set moment() date format to avoid blank input value on desktop (closes #4)
+
+
 # 1.0.3 (2015-04-23)
 
 ## Bug Fixes
