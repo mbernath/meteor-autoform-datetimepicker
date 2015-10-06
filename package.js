@@ -18,12 +18,15 @@ Package.onUse(function(api) {
   api.use('momentjs:moment@2.0.0');
   api.use('session@1.0.0');
   api.use('reactive-var@1.0.5');
-  api.use('pikadate-time');
   api.addFiles([
     'notorii_autoform-datetimepicker.html',
     'notorii_autoform-datetimepicker.css',
     'notorii_autoform-datetimepicker.js'
   ], 'client');
+  api.addFiles([
+    'pikaday.js',
+    'pikaday.css'
+  ],'client');
 });
 
 Package.onTest(function(api) {
