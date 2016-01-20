@@ -23,6 +23,10 @@ Package.onUse(function(api) {
     'notorii_autoform-datetimepicker.css',
     'notorii_autoform-datetimepicker.js'
   ], 'client');
+  api.addFiles([
+    'pikaday.js',
+    'pikaday.css'
+  ],'client');
 });
 
 Package.onTest(function(api) {
